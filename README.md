@@ -6,6 +6,6 @@ a) Woodhams Data Base : Woodhams, Douglas & Alford, Ross & Antwis, Rachael & Arc
 b) Personal R script to analyze the proportion of the community (based on taxa counts) and the fraction of the community (based on relative abundance) with putative inhibition to Batrachochytrium dendrobatidis (Bd) growth is found in Amphibian skin microbiome samples and the surrounding environment, using minimap2 to map nanopore sequences and finally, to generate a publication plot.
 
 
-### First time done using 16S nanopore sequencing data
+### First time done using 16S rRNA amplicons obtained by nanopore sequencing
 NOTE: Nanopore reads processing and taxonomic assignation was done previously using Spaghetti pipeline: https://github.com/adlape95/Spaghetti 
 This R script should be used after Spaghetti pipeline is completed.
