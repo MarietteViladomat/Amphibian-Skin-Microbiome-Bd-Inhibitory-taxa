@@ -8,4 +8,4 @@ b) Personal R script to analyze the proportion of the community (based on taxa c
 
 ### First time done using 16S nanopore sequencing data
 NOTE: Nanopore reads processing and taxonomic assignation was done previously using Spaghetti pipeline: https://github.com/adlape95/Spaghetti 
-
+This R script should be used after Spaghetti pipeline is completed.
