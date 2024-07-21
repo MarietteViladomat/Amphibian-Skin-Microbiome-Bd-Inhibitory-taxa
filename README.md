@@ -3,7 +3,7 @@ In this repository you will find
 
 a) Woodhams Data Base : Woodhams, Douglas & Alford, Ross & Antwis, Rachael & Archer, Holly & Becker, Matthew & Belden, Lisa & Bell, Sara & Bletz, Molly & Daskin, Joshua & Davis, Leyla & Flechas, Sandra & Lauer, Antje & González, Antonio & Harris, Reid & Holden, Whitney & Hughey, Myra & Nez, Roberto & Knight, Rob & Kueneman, Jordan & McKenzie, Valerie. (2015). Antifungal isolates database of amphibian skin-associated bacteria and function against emerging fungal pathogens Ecological Archives E096-059. Ecology. 96. 2015-595. doi:10.1890/14-1837.1.
 
-b) Personal R script to analyze how many taxa with putative inhibition to Batrachochytrium dendrobatidis (Bd) growth is found in Amphibian skin microbiome (or their surrounding environment).
+b) Personal R script to analyze how many taxa with putative inhibition to Batrachochytrium dendrobatidis (Bd) growth is found in Amphibian skin microbiome samples and their surrounding environment (water samples).
 
 
 ### First time done using 16S nanopore sequencing data
