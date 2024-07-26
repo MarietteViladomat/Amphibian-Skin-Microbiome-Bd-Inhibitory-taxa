@@ -382,7 +382,7 @@ results_long_melted_ALL <- merge(results_long_melted_fraction, results_long_melt
 #results_long_melted_ALL$relative_abundance<- results_long_melted_ALL$relative_abundance /100
 
 
-### PLOTS!
+## Plots Try
 
 ggplot(results_long_melted_ALL, aes(x = sample, y = relative_abundance, fill = category)) +
   geom_bar(stat = "identity", alpha = 0.7) +
@@ -441,4 +441,124 @@ q
 
 ggsave("stacked_twopanels_mapq60.png", q, dpi = 300, height = 8, width = 10, bg = "white")
 
+
+
+
+### FINAL PLOT // CASE SPECIFIC // FOR OUR PUBLICATION PAPER ----
+
+
+metadata <- read.table("metadata_amfibios.csv", sep = ";" , header = T)
+
+# Format metadata 
+metadata$Type <- gsub(pattern=" ", "_", metadata$Type)
+metadata$BD_status <- ifelse(metadata$BD_status == "status_1", "Bd+" , "Bd-")
+metadata$amphBd <- paste(metadata$Type , metadata$BD_status , sep = "_")
+
+colnames(metadata)[ 1 ] <- "sample"
+
+# First try: 
+almostthere <- merge( results_long_melted_ALL_melted , metadata[c("sample", "Type", "BD_status" , "amphBd")] , by = "sample")
+
+al <- ggplot(almostthere, aes(x = sample, y = value, fill = category)) +
+  geom_bar(stat = "identity", alpha = 0.7) + #colour="black"
+  facet_wrap(~ amphBd + measurement, scales = "free_x", ncol = 2) +
+  labs(x = "Sample", y = NULL, fill = "Category") +
+  scale_fill_manual(values = c("other" = "#E1BE6A", "putative_inhibitory_taxa" = "#40B0A6")) +
+  scale_color_manual(values = c("relative_abundance" = "black", "proportion" = "black")) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    legend.position = "right",  # Adjust as needed (or use "none" to hide all legends)
+    legend.title = element_blank(),  # Hides the legend title if needed
+    strip.text = element_text(size = 12, hjust = 0),  # Align facet labels to the left
+    strip.background = element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(), 
+    axis.line = element_line(colour = "white")
+  ) +
+  scale_y_continuous(labels = scales::comma)
+
+al
+
+
+#Last try:
+# Reorder `sample` within each `amphBD`
+almostthere <- almostthere %>%
+  arrange(amphBd, sample) %>%
+  mutate(sample = factor(sample, levels = unique(sample)))
+
+# Create a data frame for the rectangles
+rect_data <- almostthere %>%
+  group_by(amphBd) %>%
+  summarize(start = min(as.numeric(sample)), end = max(as.numeric(sample)), .groups = 'drop') %>%
+  mutate(ymin = -Inf, ymax = Inf)  
+
+rect_data$amphBd <- gsub("_", " ", rect_data$amphBd)
+
+### Publication Plot
+y <- ggplot(almostthere, aes(x = sample, y = value, fill = category)) +
+  geom_bar(stat = "identity", alpha = 0.7) +
+  facet_wrap(~ measurement, scales = "free_y", nrow = 2) +
+  labs(x = "Sample", y = NULL, fill = "Category") +
+  scale_fill_manual(values = c("other" = "#E1BE6A", "putative_inhibitory_taxa" = "#40B0A6")) +
+  scale_color_manual(values = c("relative_abundance" = "black", "proportion" = "black")) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    legend.position = "right",
+    legend.title = element_blank(),
+    strip.text = element_text(size = 12, hjust = 0),
+    strip.background = element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(), 
+    axis.line = element_line(colour = "white")
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  # Add rectangles
+  geom_rect(data = rect_data, aes(xmin = start - 0.5, xmax = end + 0.5, ymin = ymin, ymax = ymax),
+            fill = NA, color = "black", size = 0.5, inherit.aes = FALSE, linewidth = 0.5) +
+  geom_text(data = rect_data, aes(x = start - 0.5, y = Inf, label = amphBd), 
+            hjust = 0, vjust = 1.1, size = 4, inherit.aes = FALSE)
+
+y
+
+ggsave("stackedbyamph_mapq60.png", y, dpi = 300, height = 10, width = 14, bg = "white")
+
+
+
+
+### Kruskall Wallis between amphibian sps and presence or absence of Bd ----
+
+unique(almostthere$Type)
+
+# Pelophylax
+
+Pelophylax <- almostthere %>%
+  filter(category == "putative_inhibitory_taxa" , Type == "Pelophylax_perezi", measurement == "relative_abundance")
+
+kruskal.test(Pelophylax$value , as.factor(Pelophylax$BD_status))
+# p-value = 0.7494
+
+Pelophylaxprop <- almostthere %>%
+  filter(category == "putative_inhibitory_taxa" , Type == "Pelophylax_perezi", measurement == "proportion_of_taxa")
+
+kruskal.test(Pelophylaxprop$value , as.factor(Pelophylaxprop$BD_status))
+# p-value = 0.9491
+
+
+# Hyla
+
+Hyla <- almostthere %>%
+  filter(category == "putative_inhibitory_taxa" , Type == "Hyla_meridionalis", measurement == "relative_abundance")
+
+kruskal.test(Hyla$value , as.factor(Hyla$BD_status))
+# p-value = 0.09407
+
+Hylaprop <- almostthere %>%
+  filter(category == "putative_inhibitory_taxa" , Type == "Hyla_meridionalis", measurement == "proportion_of_taxa")
+
+kruskal.test(Hylaprop$value , as.factor(Hylaprop$BD_status))
+# p-value = 0.06467
 
