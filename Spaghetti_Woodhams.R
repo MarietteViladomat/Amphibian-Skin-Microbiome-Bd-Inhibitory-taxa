@@ -496,7 +496,7 @@ rect_data <- almostthere %>%
 
 rect_data$amphBd <- gsub("_", " ", rect_data$amphBd)
 
-### Publication Plot
+### Publication Plot : Bar Plots
 y <- ggplot(almostthere, aes(x = sample, y = value, fill = category)) +
   geom_bar(stat = "identity", alpha = 0.7) +
   facet_wrap(~ measurement, scales = "free_y", nrow = 2) +
@@ -526,6 +526,46 @@ y
 
 ggsave("stackedbyamph_mapq60.png", y, dpi = 300, height = 10, width = 14, bg = "white")
 
+
+
+### Publication Plot : Boxplots
+
+
+# Create the boxplots of relative abundance
+relabun_box <- ggplot(almostthere[almostthere$measurement == "relative_abundance" & almostthere$category == "putative_inhibitory_taxa",], aes(x = BD_status, y = value, fill = BD_status)) +
+  geom_boxplot()+
+  facet_wrap(~ Type, scales = "free_x") + 
+  scale_fill_manual(values = c("Bd+" = "#40B0A6", "Bd-" = "#A5E8D3")) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(),  
+        axis.title.x = element_blank()) +
+  labs(title = "",
+       x = "",
+       y = "relative abundance",
+       fill = "")+
+  theme(legend.position = "none")
+
+# Create the boxplots of proportion of taxa
+proportion_box <- ggplot(almostthere[almostthere$measurement == "proportion_of_taxa" & almostthere$category == "putative_inhibitory_taxa",], aes(x = BD_status, y = value, fill = BD_status)) +
+  geom_boxplot()+
+  facet_wrap(~ Type, scales = "free_x") + 
+  scale_fill_manual(values = c("Bd+" = "#40B0A6", "Bd-" = "#A5E8D3")) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(),  
+        axis.title.x = element_blank(),
+        strip.text = element_blank()) +
+  labs(title = "",
+       x = "",
+       y = "proportion of taxa",
+       fill = "")+
+  theme(legend.position = "bottom")
+
+relabun_box
+proportion_box
+
+combined_plot <- grid.arrange(relabun_box, proportion_box, ncol = 1, nrow = 2)
+
+ggsave("boxplots_putative_inhibitory.png", combined_plot, dpi = 300, height = 5, width = 8, bg = "white")
 
 
 
