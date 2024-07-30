@@ -1,16 +1,16 @@
 ############################################################################
-##############                                                ##############
-##############                                                ##############
-##############            MARIETTE VILADOMAT JASSO            ##############
-##############                                                ##############
-##############                                                ##############
-##############     PUTATIVE INHIBITORY OF Bd GROWTH - TAXA    ##############
-##############              Amphibian Microbiome              ##############
-##############               USING: Woodhams DB               ##############
-##############                                                ##############
-##############                 16S Nanopore                   ##############
-##############                                                ##############
-##############                                                ##############
+##############                                                   ##############
+##############                                                   ##############
+##############             MARIETTE VILADOMAT JASSO              ##############
+##############                                                   ##############
+##############                                                   ##############
+############## TAXA ASSIGNED AS PUTATIVE INHIBITORY TO Bd GROWTH ##############
+##############                USING: Woodhams DB                 ##############
+##############                                                   ##############
+##############               Amphibian Microbiome                ##############
+##############                  16S Nanopore                     ##############
+##############                                                   ##############
+##############                                                   ##############
 ############################################################################
 
 ###  Nanopore reads processing and taxonomic assignation was done previously using Spaghetti pipeline: 
@@ -235,7 +235,6 @@ hist(paf$perc_tlen_aligned, breaks = 100)
 
 # Criteria chosen: mapq > 60 and >50 and paf$perc_tlen_aligned > 0.8 (used tlen because it's the limiting factor in terms of length (db has as low as 552 pb reference seqs))
 paf_filtered_60 <- paf[paf$mapq >= 60 & paf$perc_tlen_aligned > 0.8,]
-paf_filtered_50 <- paf[paf$mapq >= 50 & paf$perc_tlen_aligned > 0.8,] 
 
 
 
@@ -444,7 +443,7 @@ ggsave("stacked_twopanels_mapq60.png", q, dpi = 300, height = 8, width = 10, bg 
 
 
 
-### FINAL PLOT // CASE SPECIFIC // FOR OUR PUBLICATION PAPER ----
+### FINAL PLOT - CASE SPECIFIC // FOR OUR SPECIFIC PUBLICATION PAPER ----
 
 
 metadata <- read.table("metadata_amfibios.csv", sep = ";" , header = T)
@@ -456,33 +455,9 @@ metadata$amphBd <- paste(metadata$Type , metadata$BD_status , sep = "_")
 
 colnames(metadata)[ 1 ] <- "sample"
 
-# First try: 
+# Almost There: 
 almostthere <- merge( results_long_melted_ALL_melted , metadata[c("sample", "Type", "BD_status" , "amphBd")] , by = "sample")
 
-al <- ggplot(almostthere, aes(x = sample, y = value, fill = category)) +
-  geom_bar(stat = "identity", alpha = 0.7) + #colour="black"
-  facet_wrap(~ amphBd + measurement, scales = "free_x", ncol = 2) +
-  labs(x = "Sample", y = NULL, fill = "Category") +
-  scale_fill_manual(values = c("other" = "#E1BE6A", "putative_inhibitory_taxa" = "#40B0A6")) +
-  scale_color_manual(values = c("relative_abundance" = "black", "proportion" = "black")) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 90, hjust = 1),
-    legend.position = "right",  # Adjust as needed (or use "none" to hide all legends)
-    legend.title = element_blank(),  # Hides the legend title if needed
-    strip.text = element_text(size = 12, hjust = 0),  # Align facet labels to the left
-    strip.background = element_blank(),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank(),
-    panel.background = element_blank(), 
-    axis.line = element_line(colour = "white")
-  ) +
-  scale_y_continuous(labels = scales::comma)
-
-al
-
-
-#Last try:
 # Reorder `sample` within each `amphBD`
 almostthere <- almostthere %>%
   arrange(amphBd, sample) %>%
@@ -524,7 +499,7 @@ y <- ggplot(almostthere, aes(x = sample, y = value, fill = category)) +
 
 y
 
-ggsave("stackedbyamph_mapq60.png", y, dpi = 300, height = 10, width = 14, bg = "white")
+ggsave("stackedbyamphsps_mapq60.png", y, dpi = 300, height = 10, width = 14, bg = "white")
 
 
 
@@ -546,19 +521,20 @@ relabun_box <- ggplot(almostthere[almostthere$measurement == "relative_abundance
   theme(legend.position = "none")
 
 # Create the boxplots of proportion of taxa
+# Create the boxplots of proportion of taxa
+
 proportion_box <- ggplot(almostthere[almostthere$measurement == "proportion_of_taxa" & almostthere$category == "putative_inhibitory_taxa",], aes(x = BD_status, y = value, fill = BD_status)) +
   geom_boxplot()+
   facet_wrap(~ Type, scales = "free_x") + 
   scale_fill_manual(values = c("Bd+" = "#40B0A6", "Bd-" = "#A5E8D3")) +
+  scale_x_discrete(labels = c("Bd+" = "Bd positive", "Bd-" = "Bd negative"))+
   theme_minimal() +
-  theme(axis.text.x = element_blank(),  
-        axis.title.x = element_blank(),
-        strip.text = element_blank()) +
+  theme(strip.text = element_blank()) +
   labs(title = "",
        x = "",
        y = "proportion of taxa",
        fill = "")+
-  theme(legend.position = "bottom")
+  theme(legend.position = "none")
 
 relabun_box
 proportion_box
@@ -568,7 +544,7 @@ combined_plot <- grid.arrange(relabun_box, proportion_box, ncol = 1, nrow = 2)
 ggsave("boxplots_putative_inhibitory.png", combined_plot, dpi = 300, height = 5, width = 8, bg = "white")
 
 
-
+### CASE SPECIFIC FOR OUR PUBLICATION PAPER:
 ### Kruskall Wallis between amphibian sps and presence or absence of Bd ----
 
 unique(almostthere$Type)
