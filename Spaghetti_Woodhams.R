@@ -181,28 +181,9 @@ writeXStringSet(fasta_sequences_final, filepath = "otu_tax_paf_sequences.fasta")
 
 ### 6) MAPPING W/MINIMAP2 ----
 
-# download minimap2 from github page:
-
-   # curl -L https://github.com/lh3/minimap2/releases/download/v2.28/minimap2-2.28_x64-linux.tar.bz2
-   # tar -jxvf - ./minimap2-2.28_x64-linux/minimap2
-
-
-# set up data base to use with minimap2:
-
-   # minimap2 -d Amphibian-skin_bacteria_16S_sequences.mmi Amphibian-skin_bacteria_16S_sequences.fna
-
-
-# otu_tax_paf_sequences.fasta was used as input for minimap2 against the Woodhams db using Spaghetti's defaults:
-
-   # minimap2-2.28_x64-linux/minimap2 -x map-ont -t 4 --secondary=no -K 10M Amphibian-skin_bacteria_16S_sequences.mmi otu_tax_paf_sequences.fasta > otu_tax_paf_sequences.fasta.paf
-
-
-# The result was otu_tax_paf_sequences.fasta.paf ; flag " --secondary=no " is for no secondary alignments in the output file. But sometimes, we still get secondary alignments
-# So we used script " filterPAF.py " from the Spaghetti pipeline in order to remove secondary alignments AND alingments below 500 pb:
-
-   # python filterPAF.py -i otu_tax_paf_sequences.fasta.paf > otu_tax_paf_sequences.fasta_FILTERED.paf
-
-
+# THIS STEP IS DONE OUT FROM THIS SCRIPT, IN COMMAND LINE
+# set up data base to use with minimap2 and map your sequences
+# use script " filterPAF.py " from the Spaghetti pipeline in order to remove secondary alignments AND alingments below 500 pb:
 # The result was otu_tax_paf_sequences.fasta_FILTERED.paf, which needs to be processed and merged with the final table
 
 
