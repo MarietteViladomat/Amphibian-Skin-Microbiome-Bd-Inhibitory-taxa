@@ -3,7 +3,7 @@
 Report for reproducibility purposes.
 
 ### Woodhams DB assignation as "putative inhibitory to Bd taxa" and comparison with samples infected and not infected with Bd: 
-### First time done using 16S rRNA amplicons obtained by nanopore sequencing
+#### Done using 16S rRNA amplicons obtained by nanopore sequencing
 In this repository you will find
 
 a) Woodhams Data Base : Woodhams, Douglas & Alford, Ross & Antwis, Rachael & Archer, Holly & Becker, Matthew & Belden, Lisa & Bell, Sara & Bletz, Molly & Daskin, Joshua & Davis, Leyla & Flechas, Sandra & Lauer, Antje & González, Antonio & Harris, Reid & Holden, Whitney & Hughey, Myra & Nez, Roberto & Knight, Rob & Kueneman, Jordan & McKenzie, Valerie. (2015). Antifungal isolates database of amphibian skin-associated bacteria and function against emerging fungal pathogens Ecological Archives E096-059. Ecology. 96. 2015-595. doi:10.1890/14-1837.1.
