@@ -424,7 +424,7 @@ ggsave("stacked_twopanels_mapq60.png", q, dpi = 300, height = 8, width = 10, bg 
 
 
 
-### FINAL PLOT - CASE SPECIFIC // FOR OUR SPECIFIC PUBLICATION PAPER ----
+### FINAL PLOT - CASE SPECIFIC FOR PUBLICATION PAPER ----
 
 
 metadata <- read.table("metadata_amfibios.csv", sep = ";" , header = T)
