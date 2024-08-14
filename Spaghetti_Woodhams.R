@@ -41,15 +41,15 @@ library(reshape2)
 
 ### 1) IMPORT TAX AND OTU FILES -----
 
-tax <- read.csv("physeq_taxonomy_amfibios_COLAPSED_genus.csv")
+tax <- read.csv("physeq_colapsedgenus.csv")
 colnames(tax)[1] <- "otu_tax_id"
 
-otus <- read.csv("otu_table_amfibios_COLAPSED_genus_rel.csv")
+otus <- read.csv("otu_table_colapsedgenus_rel.csv")
 colnames(otus)[1]<- "otu_tax_id"
 
 ### 2) IMPORT READ DATA (PAF FILES) ------------
 
-folder_path <- "All_data/filteredPAFs"
+folder_path <- "All_data/filteredPAFs"  # This path is case specific. Adapt to your data
 
 # List all .paf files in the folder, excluding those with "mock" in the filename
 paf_files <- list.files(folder_path, pattern = "\\.paf$", full.names = TRUE)
@@ -77,9 +77,6 @@ for (paf_file in paf_files) {
 
 #remove temp data from memory
 rm(temp_data, data, read_ids, seq_ids, file_name)
-
-#free RAM
-gc()
 
 #format file_name to match fastq names
 paf_data$file_name <- gsub("-f.paf", "", paf_data$file_name)
@@ -122,8 +119,6 @@ for (fastq_filename in fastq_filenames){
   # Remove everything after the first space in sequence names
   names(dna_sequences) <- sub(" .*", "", names(dna_sequences))
   
-  # delete fastq file to free RAM
-  rm(sequences)
   
   # Subset sequences that got a hit with minimap2
   subset_sequences <- dna_sequences[names(dna_sequences) %in% paf_data_subset$read_ids]
@@ -144,12 +139,6 @@ for (fastq_filename in fastq_filenames){
   
 }
 
-#free RAM
-rm(merged_subset, subset_sequences, dna_sequences, paf_data_subset)
-rm(paf_data)
-gc()
-
-
 
 ### 4) MERGE SEQS +  OTUS +  TAX // CHECKPOINT-----
 
@@ -165,56 +154,34 @@ saveRDS(otu_tax_paf_with_sequences, "otu_tax_paf_with_sequences.RDS" )
 
 
 
-### 5) OUTPUT READS WITH READ_ID AS HEADER // CONVERT TO FASTA FILES------
+### 5) OUTPUT READS WITH READ_ID AS HEADER and CONVERT TO FASTA FILES------
 
 otu_tax_paf_with_sequences <- readRDS("otu_tax_paf_with_sequences.RDS" )
 
-colnames(otu_tax_paf_with_sequences) # we're gonna need read_ids and seq columns
-
-# Create a DNAStringSet object from the read_ids and seq columns
+colnames(otu_tax_paf_with_sequences) 
 fasta_sequences_final <- DNAStringSet(otu_tax_paf_with_sequences$seq)
 names(fasta_sequences_final) <- otu_tax_paf_with_sequences$read_ids
-
-# Write the DNAStringSet object to a FASTA file
 writeXStringSet(fasta_sequences_final, filepath = "otu_tax_paf_sequences.fasta")
 
 
 ### 6) MAPPING W/MINIMAP2 ----
 
-# THIS STEP IS DONE OUT FROM THIS SCRIPT, IN COMMAND LINE
-# set up data base to use with minimap2 and map your sequences
-# use script " filterPAF.py " from the Spaghetti pipeline in order to remove secondary alignments AND alingments below 500 pb:
-# The result was otu_tax_paf_sequences.fasta_FILTERED.paf, which needs to be processed and merged with the final table
+# THIS STEP IS DONE OUT FROM THIS SCRIPT, IN COMMAND LINE: 
+# 1. use minimap2 to map
+# 2. use script " filterPAF.py " from the Spaghetti pipeline to remove secondary alignments AND alingments below 500 pb:
+# 3. resulting otu.paf needs to be processed and merged with the final table
 
 
 ### 7) PAF FILE FORMATTING  /// SELECTING THRESHOLD ----
 
-# Read PAF file characteristics (https://cran.r-project.org/web/packages/pafr/vignettes/Introduction_to_pafr.html for reference)
 paf <- read.table("otu_tax_paf_sequences.fasta_FILTERED.paf", sep = "\t", header = FALSE, stringsAsFactors = FALSE)
-
 paf <- paf[,1:12] #subset useful columns
 colnames(paf) <- c("qname", "qlen", "qstart", "qend",
                    "strand", "tname", "tlen", "tstart", 
                    "tend", "nmatch", "alen", "mapq")
 
 
-# Exploratory Data Analysis
-
-# 1. check distributionsof relevant columns
-hist(paf$mapq, breaks = 50); median(paf$mapq)
-hist(paf$alen, breaks = 100); median(paf$alen)
-hist(paf$qlen, breaks = 100); median(paf$qlen)
-hist(paf$tlen, breaks = 100); median(paf$tlen); min(paf$tlen)
-hist(paf$nmatch, breaks = 100); median(paf$nmatch)
-
-# 2. make columns with %length query to target and target to query and check distributions
-paf$perc_qlen_aligned <- paf$alen / paf$qlen 
-hist(paf$perc_qlen_aligned, breaks = 100)
-paf$perc_tlen_aligned <- paf$alen / paf$tlen 
-hist(paf$perc_tlen_aligned, breaks = 100)
-
-
-# Criteria chosen: mapq > 60 and >50 and paf$perc_tlen_aligned > 0.8 (used tlen because it's the limiting factor in terms of length (db has as low as 552 pb reference seqs))
+# Criteria chosen: mapq > 60 and paf$perc_tlen_aligned > 0.8 (used tlen because it's the limiting factor in terms of length (db has as low as 552 pb reference seqs))
 paf_filtered_60 <- paf[paf$mapq >= 60 & paf$perc_tlen_aligned > 0.8,]
 
 
@@ -387,7 +354,6 @@ ggplot(results_long_melted_ALL, aes(x = sample, y = proportion_of_taxa, fill = c
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  
 
 
-
 #### Publication Plot
 
 results_long_melted_ALL$relative_abundance<- results_long_melted_ALL$relative_abundance /100
@@ -420,7 +386,6 @@ q<- ggplot(results_long_melted_ALL_melted, aes(x = sample, y = value, fill = cat
 q
 
 ggsave("stacked_twopanels_mapq60.png", q, dpi = 300, height = 8, width = 10, bg = "white")
-
 
 
 
@@ -523,39 +488,3 @@ proportion_box
 combined_plot <- grid.arrange(relabun_box, proportion_box, ncol = 1, nrow = 2)
 
 ggsave("boxplots_putative_inhibitory.png", combined_plot, dpi = 300, height = 5, width = 8, bg = "white")
-
-
-### CASE SPECIFIC FOR OUR PUBLICATION PAPER:
-### Kruskall Wallis between amphibian sps and presence or absence of Bd ----
-
-unique(almostthere$Type)
-
-# Pelophylax
-
-Pelophylax <- almostthere %>%
-  filter(category == "putative_inhibitory_taxa" , Type == "Pelophylax_perezi", measurement == "relative_abundance")
-
-kruskal.test(Pelophylax$value , as.factor(Pelophylax$BD_status))
-# p-value = 0.7494
-
-Pelophylaxprop <- almostthere %>%
-  filter(category == "putative_inhibitory_taxa" , Type == "Pelophylax_perezi", measurement == "proportion_of_taxa")
-
-kruskal.test(Pelophylaxprop$value , as.factor(Pelophylaxprop$BD_status))
-# p-value = 0.9491
-
-
-# Hyla
-
-Hyla <- almostthere %>%
-  filter(category == "putative_inhibitory_taxa" , Type == "Hyla_meridionalis", measurement == "relative_abundance")
-
-kruskal.test(Hyla$value , as.factor(Hyla$BD_status))
-# p-value = 0.09407
-
-Hylaprop <- almostthere %>%
-  filter(category == "putative_inhibitory_taxa" , Type == "Hyla_meridionalis", measurement == "proportion_of_taxa")
-
-kruskal.test(Hylaprop$value , as.factor(Hylaprop$BD_status))
-# p-value = 0.06467
-
