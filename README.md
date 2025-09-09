@@ -14,9 +14,9 @@ a) Woodhams Database : Woodhams, Douglas & Alford, Ross & Antwis, Rachael & Arch
 
 b) Personal R script: This script analyzes the microbial community with respect to Bd-inhibitory taxa, using two complementary measures:
 
-   - 1. Proportion of taxa (taxonomic proportion): The fraction of distinct taxa in each sample that belong to the Woodhams inhibitory category. Calculated as the number of inhibitory taxa divided by the total number of taxa detected in the sample. This metric reflects taxonomic representation independent of abundance.
+   - Proportion of taxa (taxonomic proportion): The fraction of distinct taxa in each sample that belong to the Woodhams inhibitory category. Calculated as the number of inhibitory taxa divided by the total number of taxa detected in the sample. This metric reflects taxonomic representation independent of abundance.
 
-   - 2. Summed relative abundance of inhibitory taxa: The fraction of sequencing reads belonging to inhibitory taxa. First, relative abundance was calculated for each taxon (reads assigned to that taxon divided by total reads in the sample). Then, all inhibitory taxa were summed to obtain the total relative abundance of the inhibitory category. This metric reflects dominance of inhibitory taxa based on sequencing depth.
+   - Summed relative abundance of inhibitory taxa: The fraction of sequencing reads belonging to inhibitory taxa. First, relative abundance was calculated for each taxon (reads assigned to that taxon divided by total reads in the sample). Then, all inhibitory taxa were summed to obtain the total relative abundance of the inhibitory category. This metric reflects dominance of inhibitory taxa based on sequencing depth.
     
    - NOTE: These two metrics capture different ecological dimensions. A sample may have many rare inhibitory taxa (high proportion of taxa, low relative abundance) or a few dominant inhibitory taxa (low proportion of taxa, high relative abundance). Both are reported separately to avoid conflating “proportion” with “abundance.” This measurements were made using minimap2 to map nanopore sequences and finally, to generate a publication plot.
 
