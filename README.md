@@ -1,4 +1,4 @@
-# Amphibian Skin 16S Nanopore Microbiome Against Woodhams Data Base of Bd-Inhibitory-taxa
+# Bd-Inhibitory Taxa in Amphibian Skin Microbiomes (16S Nanopore, Woodhams DB)
 Report for reproducibility purposes for analysis in paper (CITE WHEN PUBLISHED), where Woodhams data base was used to separate "putative inhibitory to Bd taxa" in 2 frog species' samples  and compare community structure of infected and not infected with Batrachochytrium dendrobatidis (Bd) individuals, as well as their surrounding environmental water.
 
 Analysis was performed using 16S rRNA amplicons obtained by nanopore sequencing. Nanopore reads processing and taxonomic assignation was done previously using Spaghetti pipeline: https://github.com/adlape95/Spaghetti . This R script should be used after Spaghetti pipeline is completed. 
