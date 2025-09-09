@@ -23,12 +23,12 @@ b) Personal R script: This script analyzes the microbial community with respect 
 
 ###### Workflow summary
 
-   -1. Script is used to extract sequences (reads) from PAF files produced by the Spaghetti pipeline (taxonomic assignment results). And then, to create a merged table containing: sequence IDs, alignment IDs, relative abundances (per sample), taxonomic assignments, and other metadata from PAF files.
+   1. Script is used to extract sequences (reads) from PAF files produced by the Spaghetti pipeline (taxonomic assignment results). And then, to create a merged table containing: sequence IDs, alignment IDs, relative abundances (per sample), taxonomic assignments, and other metadata from PAF files.
 
-   -2. Map extracted sequences against the Woodhams database using minimap2.
+   2. Map extracted sequences against the Woodhams database using minimap2.
 
-   -3. Apply strict filtering criteria: minimum alignment length = 500 bp, minimum alignment identity to target sequences = 80%, mapping quality = 60 (highest mapQ). This strict criteria is suggested as we are only using 16S gene reads to infer a putative protective function, which is normally not suggested. But as Woodhams has made this data base and we are profiting from it, we advise against relaxing thresholds.
+   3. Apply strict filtering criteria: minimum alignment length = 500 bp, minimum alignment identity to target sequences = 80%, mapping quality = 60 (highest mapQ). This strict criteria is suggested as we are only using 16S gene reads to infer a putative protective function, which is normally not suggested. But as Woodhams has made this data base and we are profiting from it, we advise against relaxing thresholds.
 
-   -4. Generate final results in CSV format. Files named "results_woodham_60" & "results_woodham_60_counts_proportions_fractions"
+   4. Generate final results in CSV format. Files named "results_woodham_60" & "results_woodham_60_counts_proportions_fractions"
 
-   -5. The output table "results_woodham_60_counts_proportions_fractions" was used to produce the publication plots.
+   5. The output table "results_woodham_60_counts_proportions_fractions" was used to produce the publication plots.
