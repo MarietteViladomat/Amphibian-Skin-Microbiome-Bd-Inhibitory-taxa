@@ -1,14 +1,12 @@
 # Amphibian Skin 16S Nanopore Microbiome Against Woodhams Data Base of Bd-Inhibitory-taxa
-Report for reproducibility purposes
+Report for reproducibility purposes for paper (CITE WHEN PUBLISHED), where Woodhams data base was used to separate "putative inhibitory to Bd taxa" and compare community structure in samples od frogs infected and not infected with Bd, as well as the surrounding environmental water.
 
 This repository documents the analysis of the Woodhams database of putative Bd-inhibitory taxa and its comparison with samples infected and not infected with Batrachochytrium dendrobatidis (Bd).
 
 Analysis was performed using 16S rRNA amplicons obtained by nanopore sequencing. 
-Nanopore reads processing and taxonomic assignation was done previously using Spaghetti pipeline: https://github.com/adlape95/Spaghetti . This R script should be used after Spaghetti pipeline is completed.
+Nanopore reads processing and taxonomic assignation was done previously using Spaghetti pipeline: https://github.com/adlape95/Spaghetti . This R script should be used after Spaghetti pipeline is completed. 
 
-### Woodhams DB assignation as "putative inhibitory to Bd taxa" and comparison with samples infected and not infected with Bd: 
-
-##### Repository contents
+### Repository contents
 
 a) Woodhams Database : Woodhams, Douglas & Alford, Ross & Antwis, Rachael & Archer, Holly & Becker, Matthew & Belden, Lisa & Bell, Sara & Bletz, Molly & Daskin, Joshua & Davis, Leyla & Flechas, Sandra & Lauer, Antje & González, Antonio & Harris, Reid & Holden, Whitney & Hughey, Myra & Nez, Roberto & Knight, Rob & Kueneman, Jordan & McKenzie, Valerie. (2015). Antifungal isolates database of amphibian skin-associated bacteria and function against emerging fungal pathogens Ecological Archives E096-059. Ecology. 96. 2015-595. doi:10.1890/14-1837.1.
 
@@ -21,7 +19,7 @@ b) Personal R script: This script analyzes the microbial community with respect 
    - NOTE: These two metrics capture different ecological dimensions. A sample may have many rare inhibitory taxa (high proportion of taxa, low relative abundance) or a few dominant inhibitory taxa (low proportion of taxa, high relative abundance). Both are reported separately to avoid conflating “proportion” with “abundance.” This measurements were made using minimap2 to map nanopore sequences and finally, to generate a publication plot.
 
 
-###### Workflow summary
+### Workflow summary
 
    1. Script is used to extract sequences (reads) from PAF files produced by the Spaghetti pipeline (taxonomic assignment results). And then, to create a merged table containing: sequence IDs, alignment IDs, relative abundances (per sample), taxonomic assignments, and other metadata from PAF files.
 
