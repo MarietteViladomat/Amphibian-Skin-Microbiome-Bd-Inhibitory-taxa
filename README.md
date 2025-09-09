@@ -4,9 +4,7 @@ Report for reproducibility purposes
 This repository documents the analysis of the Woodhams database of putative Bd-inhibitory taxa and its comparison with samples infected and not infected with Batrachochytrium dendrobatidis (Bd).
 
 Analysis was performed using 16S rRNA amplicons obtained by nanopore sequencing. 
-Nanopore reads processing and taxonomic assignation was done previously using Spaghetti pipeline: https://github.com/adlape95/Spaghetti 
-
-This R script should be used after Spaghetti pipeline is completed.
+Nanopore reads processing and taxonomic assignation was done previously using Spaghetti pipeline: https://github.com/adlape95/Spaghetti . This R script should be used after Spaghetti pipeline is completed.
 
 ### Woodhams DB assignation as "putative inhibitory to Bd taxa" and comparison with samples infected and not infected with Bd: 
 
