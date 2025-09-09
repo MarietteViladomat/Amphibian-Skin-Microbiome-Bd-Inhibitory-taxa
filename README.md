@@ -13,7 +13,7 @@ b) Personal R script: This script analyzes the microbial community with respect 
 
    - Summed relative abundance of inhibitory taxa: The fraction of sequencing reads belonging to inhibitory taxa. First, relative abundance was calculated for each taxon (reads assigned to that taxon divided by total reads in the sample). Then, all inhibitory taxa were summed to obtain the total relative abundance of the inhibitory category. This metric reflects dominance of inhibitory taxa based on sequencing depth.
     
-   - NOTE: These two metrics capture different ecological dimensions. A sample may have many rare inhibitory taxa (high proportion of taxa, low relative abundance) or a few dominant inhibitory taxa (low proportion of taxa, high relative abundance). Both are reported separately to avoid conflating “proportion” with “abundance.” This measurements were made using minimap2 to map nanopore sequences and finally, to generate a publication plot.
+   - NOTE: These two metrics capture different ecological dimensions. A sample may have many rare inhibitory taxa (high proportion of taxa, low relative abundance) or a few dominant inhibitory taxa (low proportion of taxa, high relative abundance). Both are reported separately to avoid conflating “proportion” with “relative abundance.” This measurements were made using minimap2 to map nanopore sequences and finally, to generate a publication plot.
 
 
 ### Workflow summary
