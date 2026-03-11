@@ -488,3 +488,73 @@ proportion_box
 combined_plot <- grid.arrange(relabun_box, proportion_box, ncol = 1, nrow = 2)
 
 ggsave("boxplots_putative_inhibitory.png", combined_plot, dpi = 300, height = 5, width = 8, bg = "white")
+
+
+
+### 10) CALCULATE LOG-RATIO METRIC AND STATISTICAL TESTS ----
+
+# Compute log-ratio: inhibitory / non-inhibitory reads per sample
+# Add a pseudocount (+1) to avoid log(0)
+results_60_long$log_ratio_inhibitory <- log(
+  (results_60_long$putative_inhibitory_taxa_sum + 1) /
+    (results_60_long$other_sum + 1)
+)
+
+# NOW LOAD METADATA !!!
+library(readr) 
+metadata_df <- read.csv("metadata_amfibios.csv", sep = ",", header = TRUE, stringsAsFactors = FALSE)
+
+# Clean up metadata
+colnames(metadata_df)[1] <- "sample"  # rename first column to match results_60_long
+metadata_df$Type <- gsub(" ", "_", metadata_df$Type)  # optional, replace spaces
+metadata_df$BD_status <- ifelse(metadata_df$BD_status == "status_1", "Bd+", "Bd-")
+metadata_df$amphBd <- paste(metadata_df$Type, metadata_df$BD_status, sep = "_")
+
+# Check first rows
+head(metadata_df)
+
+# Merge log-ratio with metadata
+logratio_df <- merge(
+  results_60_long[, c("sample", "log_ratio_inhibitory")],
+  metadata_df[, c("sample", "Type", "BD_status")],
+  by = "sample"
+)
+
+
+
+## STATISTICAL TESTS OF LOG-RATIO METRIC
+# Kruskal-Wallis test: log-ratio among species
+kruskal_species <- kruskal.test(log_ratio_inhibitory ~ Type, data = logratio_df)
+print(kruskal_species)
+## RESULT
+## Kruskal-Wallis rank sum test data: log_ratio_inhibitory by Type Kruskal-Wallis chi-squared = 7.7818, df = 2, p-value = 0.02043
+
+
+
+# Dunn post-hoc test if needed
+library(FSA)
+dunn_species <- dunnTest(log_ratio_inhibitory ~ Type, data = logratio_df, method = "bonferroni")
+print(dunn_species)
+## RESULT
+## Dunn (1964) Kruskal-Wallis multiple comparison p-values adjusted with the Bonferroni method. 
+##Comparison Z P.unadj P.adj 1 Hyla_meridionalis - Pelophylax_perezi 2.7733640 0.005548002 0.01664401 2 Hyla_meridionalis - water 0.2669593 0.789500509 1.00000000 3 Pelophylax_perezi - water -1.2090267 0.226652570 0.67995771
+
+
+
+# Wilcoxon test: log-ratio between infected vs uninfected within each species
+wilcox_results <- logratio_df %>%
+   group_by(Type) %>%
+   summarise(
+     wilcox_p = if(n_distinct(BD_status) == 2) {
+       wilcox.test(log_ratio_inhibitory ~ BD_status)$p.value
+     } else {
+       NA_real_  # or NA if you prefer
+     },
+     median_Bdpos = median(log_ratio_inhibitory[BD_status == "Bd+"], na.rm = TRUE),
+     median_Bdneg = median(log_ratio_inhibitory[BD_status == "Bd-"], na.rm = TRUE),
+     .groups = "drop"
+   )
+ print(wilcox_results)
+## RESULT
+##A tibble: 3 × 4 Type wilcox_p median_Bdpos median_Bdneg <chr> <dbl> <dbl> <dbl> 
+## 1 Hyla_meridionalis 0.101 3.01 2.35 2 Pelophylax_perezi 0.805 1.02 2.07 3 water NA NA 2.68
