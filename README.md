@@ -15,6 +15,7 @@ b) Personal R script: This script analyzes the microbial community with respect 
     
    - NOTE: These two metrics capture different ecological dimensions. A sample may have many rare inhibitory taxa (high proportion of taxa, low relative abundance) or a few dominant inhibitory taxa (low proportion of taxa, high relative abundance). Both are reported separately to avoid conflating “proportion” with “relative abundance.” This measurements were made using minimap2 to map nanopore sequences and finally, to generate a publication plot.
 
+Finally, a log-ratio metric between inhibitory taxa / other taxa is calculated and statistical tests runned to see if this taxa explain Bd infection or not.
 
 ### Workflow summary
 
@@ -27,3 +28,6 @@ b) Personal R script: This script analyzes the microbial community with respect 
    4. Generate final results in CSV format. Files named "results_woodham_60" & "results_woodham_60_counts_proportions_fractions"
 
    5. The output table "results_woodham_60_counts_proportions_fractions" was used to produce the publication plots.
+
+   6. Calculate log-ratio metric for each sample and perform statistical analysisi: Kruskall-Wallis, post-hoc Dunn test and paired-wise Wilcoxon a) between sample types and b) between Bd status within frog species 
+      
